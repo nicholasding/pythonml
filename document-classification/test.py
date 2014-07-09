@@ -84,12 +84,20 @@ def train_and_test(opts):
     print('F1 score: %.3f' % score)
     print(metrics.classification_report(y_test, pred, target_names=data_train.target_names))
 
+    # Save model
+    if opts.model_file:
+        from sklearn.externals import joblib
+        model = [vectorizer, clf]
+        joblib.dump(model, opts.model_file, compress=9)
+        print('Saved model to %s' % opts.model_file)
+
 
 def main():
     op = OptionParser()
     op.add_option('-i', '--training_file', dest='training_file', action='store', help='JSON file for training')
     op.add_option('-t', '--testing_file', dest='testing_file', action='store', help='JSON file for testing')
     op.add_option('-c', '--classifier', dest='classifier', action='store', help='Classifier, options (svm, sgd, nb)')
+    op.add_option('-s', '--save_model', dest='model_file', action='store', help='Save model into a file')
     op.add_option('--use_hashing', dest='use_hashing', action='store_true', help='Use feature hashing')
     (opts, args) = op.parse_args()
 
