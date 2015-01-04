@@ -87,7 +87,7 @@ def train_and_test(opts):
     # Save model
     if opts.model_file:
         from sklearn.externals import joblib
-        model = [vectorizer, clf]
+        model = [vectorizer, clf, data_train.target_names]
         joblib.dump(model, opts.model_file, compress=9)
         print('Saved model to %s' % opts.model_file)
 
