@@ -1,9 +1,9 @@
 from sklearn.externals import joblib
-from find_boundary import load_pic
+from helper import resize_image
 
 import numpy as np
 
-im = load_pic()
+im = resize_image('number5.png')
 X = np.asarray(im).flatten()
 
 classifier = joblib.load('model.pkl')

@@ -5,9 +5,18 @@ import numpy as np
 
 data_folder = os.path.join(os.path.dirname(__file__), 'data')
 
+__doc__ == """
+The MNIST database of handwritten digits, available from this page, has a 
+training set of 60,000 examples, and a test set of 10,000 examples. It is a 
+subset of a larger set available from NIST. The digits have been 
+size-normalized and centered in a fixed-size image.
+
+http://yann.lecun.com/exdb/mnist/
+"""
+
 class DataReader(object):
 
-    def __init__(self, filetype='train'):
+    def __init__(self, filetype='train', ):
         self.image_file = '%s-images-idx3-ubyte.gz' % filetype
         self.label_file = '%s-labels-idx1-ubyte.gz' % filetype
 
@@ -22,9 +31,7 @@ class DataReader(object):
         for i in xrange(num_images):
             data[i] = np.array(struct.unpack('B' * block_size, f.read(block_size)), dtype=np.uint8)
         f.close()
-
-        # print magic_number, num_images, num_rows, num_columns
-        # print data
+        
         self.data = data
 
         # Load labels
@@ -36,8 +43,3 @@ class DataReader(object):
         f.close()
 
         self.target = np.ravel(target)
-
-# training = DataReader()
-testing = DataReader('t10k')
-
-# print testing.target
