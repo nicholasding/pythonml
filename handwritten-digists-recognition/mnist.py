@@ -16,7 +16,7 @@ http://yann.lecun.com/exdb/mnist/
 
 class DataReader(object):
 
-    def __init__(self, filetype='train', ):
+    def __init__(self, filetype='train'):
         self.image_file = '%s-images-idx3-ubyte.gz' % filetype
         self.label_file = '%s-labels-idx1-ubyte.gz' % filetype
 
@@ -42,4 +42,5 @@ class DataReader(object):
             target[i] = struct.unpack('B', f.read(1))
         f.close()
 
-        self.target = np.ravel(target)
+        # self.target = np.ravel(target)
+        self.target = target

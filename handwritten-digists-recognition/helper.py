@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+from collections import defaultdict
 
 def resize_image(image_file):
     """
@@ -51,3 +52,24 @@ def resize_image(image_file):
     new_im = Image.new('L', (28, 28), 'white')
     new_im.paste(cropped_im, (4, 4))
     return new_im
+
+def normalize_features(data):
+    return data / 255
+
+def random_sampling(data, target, limit_per_sample):
+    new_data = np.zeros((10 * limit_per_sample, data.shape[1]))
+    new_target = np.zeros((10 * limit_per_sample, 1))
+    num_feature = data.shape[1]
+    count = defaultdict(int)
+
+    for row in np.hstack((data, target)):
+        label = row[-1]
+        if count[label] > (limit_per_sample - 1):
+            continue
+        else:
+            idx = label * limit_per_sample + count[label]
+            new_data[idx] = row[:-1]
+            new_target[idx] = row[-1]
+            count[label] += 1
+    
+    return new_data, new_target

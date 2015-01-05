@@ -1,14 +1,24 @@
 import numpy as np
 import mnist
 
+from helper import normalize_features, random_sampling
 from sklearn import datasets, svm, metrics
 from sklearn.externals import joblib
 
 training = mnist.DataReader('train')
 testing = mnist.DataReader('t10k')
 
+data, target = random_sampling(training.data, training.target, 100)
+
+# Linear SVC
 classifier = svm.LinearSVC()
-classifier.fit(training.data, training.target)
+
+# Gaussian Kernel
+# classifier = svm.SVC(gamma=0.03)
+
+# Polynomial Kernel, d = 4
+# classifier = svm.SVC(kernel='poly', degree=4)
+classifier.fit(normalize_features(data), target.ravel())
 
 joblib.dump(classifier, 'model.pkl')
 
