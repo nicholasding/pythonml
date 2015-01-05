@@ -1,6 +1,8 @@
-from PIL import Image
 import numpy as np
+
+from PIL import Image
 from collections import defaultdict
+from sklearn.decomposition import PCA
 
 def resize_image(image_file):
     """
@@ -71,5 +73,10 @@ def random_sampling(data, target, limit_per_sample):
             new_data[idx] = row[:-1]
             new_target[idx] = row[-1]
             count[label] += 1
-    
+
     return new_data, new_target
+
+def reduce_features(data, num_features):
+    pca = PCA(n_components=num_features)
+    reduced_data = pca.fit_transform(data)
+    return reduced_data, pca

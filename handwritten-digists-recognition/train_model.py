@@ -8,23 +8,17 @@ from sklearn.externals import joblib
 training = mnist.DataReader('train')
 testing = mnist.DataReader('t10k')
 
-data, target = random_sampling(training.data, training.target, 100)
+data, target = random_sampling(training.data, training.target, 1000)
 
-# Linear SVC
-classifier = svm.LinearSVC()
-
-# Gaussian Kernel
-# classifier = svm.SVC(gamma=0.03)
-
-# Polynomial Kernel, d = 4
-# classifier = svm.SVC(kernel='poly', degree=4)
+# Gaussian Kernel, so far the best
+classifier = svm.SVC(gamma=0.03)
 classifier.fit(normalize_features(data), target.ravel())
 
 joblib.dump(classifier, 'model.pkl')
 
 print 'Training done, modek.pkl saved.'
 
-predicted = classifier.predict(testing.data)
+predicted = classifier.predict(normalize_features(testing.data))
 expected = testing.target
 
 print("Classification report for classifier %s:\n%s\n"
