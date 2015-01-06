@@ -1,17 +1,21 @@
 import numpy as np
 
-from PIL import Image
+from PIL import Image, ImageOps
 from collections import defaultdict
 from sklearn.decomposition import PCA
+from scipy import ndimage
 
 def resize_image(image_file):
     """
-    Convert image to grey scale then find the bounding box.
+    Convert image to grey scale then find the bounding box and the center of mass.
     Resize it to 20 x 20, center it on 28 x 28 image.
     """
     im = Image.open(image_file).convert('L')
     pixels = im.load()
     width, height = im.size
+
+    # Find center of mass
+    center_y, center_x = ndimage.measurements.center_of_mass(255 - np.asarray(im))
 
     left, top, right, bottom = 0, 0, 0, 0
     for x in xrange(width):
@@ -38,25 +42,21 @@ def resize_image(image_file):
             bottom = y
             break
 
-    # print left, top, right, bottom
-    # max_w = max((left, top, right, bottom))
     new_width, new_height = (right - left), (bottom - top)
-    if new_width > new_height:
-        # reset height
-        top -= (new_width - new_height) / 2
-        bottom += (new_width - new_height) / 2
-    if new_width < new_height:
-        # reset width
-        left -= (new_height - new_width) / 2
-        right += (new_height - new_width) / 2
+    half_length = max(new_width, new_height) / 2
+    top = center_y - half_length
+    bottom = center_y + half_length
+    left = center_x - half_length
+    right = center_x + half_length
 
-    cropped_im = im.crop((left, top, right, bottom)).resize((20, 20), Image.ANTIALIAS)
+    cropped_im = im.crop(map(int, (left, top, right, bottom))).resize((20, 20), Image.ANTIALIAS)
     new_im = Image.new('L', (28, 28), 'white')
     new_im.paste(cropped_im, (4, 4))
+    new_im = ImageOps.invert(new_im)
     return new_im
 
 def normalize_features(data):
-    return data / 255
+    return data / 255.0
 
 def random_sampling(data, target, limit_per_sample):
     new_data = np.zeros((10 * limit_per_sample, data.shape[1]))

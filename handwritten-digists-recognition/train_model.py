@@ -8,7 +8,7 @@ from sklearn.externals import joblib
 training = mnist.DataReader('train')
 testing = mnist.DataReader('t10k')
 
-data, target = random_sampling(training.data, training.target, 1000)
+data, target = random_sampling(training.data, training.target, 3000)
 
 # Gaussian Kernel, so far the best
 classifier = svm.SVC(gamma=0.03)
@@ -19,7 +19,7 @@ joblib.dump(classifier, 'model.pkl')
 print 'Training done, modek.pkl saved.'
 
 predicted = classifier.predict(normalize_features(testing.data))
-expected = testing.target
+expected = testing.target.ravel()
 
 print("Classification report for classifier %s:\n%s\n"
       % (classifier, metrics.classification_report(expected, predicted)))

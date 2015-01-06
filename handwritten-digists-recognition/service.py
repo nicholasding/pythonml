@@ -25,8 +25,8 @@ class ImageClassification(object):
         data.write(data_to_64.decode('base64'))
         data.seek(0)
         im = resize_image(data)
-        X = 255 - np.asarray(im).flatten()
-        print X
+        print np.asarray(im)
+        X = np.asarray(im).flatten()
         label = classifier.predict(normalize_features(X))
         print label
         return label[0]
